@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable'
 
 export interface PeriodicElement {
   name: string;
@@ -28,4 +30,14 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class AppComponent {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
+
+  exportToPdf() {
+    const tableData = {
+      head: [this.displayedColumns.map(columnName => columnName.toUpperCase())],
+      body: this.dataSource.map(rowObject => Object.values(rowObject)),
+    }
+    const doc = new jsPDF()
+    autoTable(doc, tableData)
+    doc.save('table.pdf')
+  }
 }
